@@ -1,0 +1,8 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "echo 'Using Dittofeed Docker Compose'"
+
+[deploy]
+startCommand = "cd dittofeed && docker compose -f docker-compose.lite.yaml up"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
