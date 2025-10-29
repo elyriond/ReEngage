@@ -102,58 +102,44 @@ npm run dev
 
 ---
 
-## Shared Demo Instance (Railway)
+## Shared Demo Instance (ngrok)
 
-### Why Railway?
-- ✅ $5 free credit (enough for hackathon)
-- ✅ Auto-deploy from Git (team sees changes instantly)
-- ✅ No cold starts
-- ✅ Easy rollback
+### Why ngrok?
+- ✅ Free and instant setup
+- ✅ Exposes local Dittofeed to internet
+- ✅ Perfect for hackathon demos
+- ✅ No deployment complexity
 
 ### Setup (Team Lead Only)
 
-1. **Install Railway CLI**
+1. **Sign up for ngrok**
+   - Go to: https://dashboard.ngrok.com/signup
+   - Use GitHub to sign up (free)
+
+2. **Install ngrok**
    ```bash
-   npm install -g @railway/cli
+   winget install Ngrok.Ngrok
    ```
 
-2. **Login to Railway**
+3. **Configure authtoken**
    ```bash
-   railway login
+   ngrok config add-authtoken YOUR_TOKEN
+   # Get token from: https://dashboard.ngrok.com/get-started/your-authtoken
    ```
 
-3. **Initialize Project**
+4. **Start ngrok tunnel**
    ```bash
-   cd dittofeed
-   railway init
-   # Choose: "Create new project"
-   # Name: mapp-fashion
+   ngrok http 3000
    ```
 
-4. **Deploy**
-   ```bash
-   railway up
-   ```
+5. **Share URL with Team**
+   - Copy the "Forwarding" URL from ngrok output
+   - Share with team in Slack/Discord
+   - Update this document with current URL
 
-5. **Set Environment Variables**
-   ```bash
-   railway variables set PASSWORD=<strong-password>
-   railway variables set WORKSPACE_NAME=MappFashion
-   ```
+### Access Shared Instance (ngrok)
 
-6. **Get Public URL**
-   ```bash
-   railway domain
-   # Creates: mapp-fashion-production.up.railway.app
-   ```
-
-7. **Share with Team**
-   - Add team members in Railway dashboard
-   - Share URL and credentials
-
-### Access Shared Instance
-
-**URL**: `https://mapp-fashion-production.up.railway.app` (or similar)
+**URL**: `<INSERT-NGROK-URL-HERE>` (e.g., `https://abc123.ngrok-free.app`)
 
 **Purpose**:
 - Demo to judges/stakeholders
@@ -161,26 +147,32 @@ npm run dev
 - End-to-end testing with real data
 
 **Credentials**:
-- Password: `<team-lead-provides>`
-- Workspace: `MappFashion`
+- Password: `password`
+- Workspace: `Default`
 
 **When to use**:
 - Testing full flow with Kafka
 - Showing progress to team
 - Final demo preparation
 
-### Auto-Deploy from Git
+**Important Notes:**
+- ⚠️ The ngrok URL is temporary and changes each time ngrok restarts
+- ⚠️ Team lead's laptop must be running with Docker and ngrok active
+- ⚠️ If you see an ngrok warning page, click "Visit Site"
+- ⚠️ Ask team lead for current URL if connection fails
 
-Once Railway is connected to your GitHub repo:
+### How Team Lead Runs Shared Instance
+
 ```bash
-# Any push to main automatically deploys
-git push origin main
+# 1. Start Docker containers (if not running)
+cd dittofeed
+docker compose -f docker-compose.lite.yaml up -d
 
-# Check deployment status
-railway status
+# 2. Start ngrok tunnel (in new terminal)
+ngrok http 3000
 
-# View logs
-railway logs
+# 3. Share the ngrok URL with team
+# Look for: Forwarding https://YOUR-URL.ngrok-free.app -> http://localhost:3000
 ```
 
 ---
