@@ -49,7 +49,7 @@ export function getGlobalJourneyErrors({
   if (hasEventEntry && hasWaitForNode) {
     errors.set(
       GlobalJourneyErrorType.WaitForNodeAndEventEntryNode,
-      "A journey cannot have both an Event Entry node and a non-keyed Wait For node",
+      "A whiteboard cannot have both an Event Entry node and a non-keyed Wait For node",
     );
   }
   return errors;

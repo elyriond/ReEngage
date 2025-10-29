@@ -322,7 +322,7 @@ function JourneysCell({ getValue }: CellContext<Row, unknown>) {
   }
 
   const relatedLabel = `${journeys.length} ${
-    journeys.length === 1 ? "Journey" : "Journeys"
+    journeys.length === 1 ? "Whiteboard" : "Whiteboards"
   }`;
 
   const relatedResources = journeys.map((journey) => ({
@@ -527,7 +527,7 @@ export default function TemplatesTable({
       },
       {
         accessorKey: "journeysUsedBy",
-        header: "Journeys Used By",
+        header: "Whiteboards Used By",
         cell: JourneysCell,
         enableSorting: false,
       },

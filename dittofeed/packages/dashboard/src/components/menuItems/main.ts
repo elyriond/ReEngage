@@ -49,11 +49,11 @@ const menuItems: { items: MenuItemGroup[] } = {
       children: [
         {
           id: "journeys",
-          title: "Journeys",
+          title: "Whiteboards",
           type: "item",
           url: "/journeys",
           icon: LanOutlined,
-          description: "View and, create, and edit user journeys.",
+          description: "View, create, and edit user whiteboards.",
         },
         {
           id: "messages",

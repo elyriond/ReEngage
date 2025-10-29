@@ -274,7 +274,7 @@ function JourneysCell({ getValue }: CellContext<Row, unknown>) {
     return null; // Or return <Typography variant="body2">-</Typography>; if preferred
   }
 
-  const relatedLabel = `${journeys.length} ${journeys.length === 1 ? "Journey" : "Journeys"}`;
+  const relatedLabel = `${journeys.length} ${journeys.length === 1 ? "Whiteboard" : "Whiteboards"}`;
 
   // Restore the relatedResources variable
   const relatedResources = journeys.map((journey) => ({
@@ -436,7 +436,7 @@ export function SegmentsTable({
       },
       journeysUsedBy: {
         id: "journeysUsedBy",
-        header: "Journeys Used By",
+        header: "Whiteboards Used By",
         accessorKey: "journeysUsedBy",
         cell: JourneysCell,
         enableSorting: false,

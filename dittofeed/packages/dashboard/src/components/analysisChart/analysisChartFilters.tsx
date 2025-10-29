@@ -99,7 +99,7 @@ export interface AnalysisFiltersState {
 }
 
 const keyCommandLabels: Record<AnalysisFilterKey, string> = {
-  journeys: "Journey",
+  journeys: "Whiteboard",
   broadcasts: "Broadcast",
   channels: "Channel",
   providers: "Provider",

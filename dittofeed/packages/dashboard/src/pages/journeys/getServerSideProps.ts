@@ -98,7 +98,7 @@ export const journeyGetServerSideProps: JourneyGetServerSideProps =
         journeyEdges: DEFAULT_EDGES,
       };
 
-      const name = `New Journey - ${id}`;
+      const name = `New Whiteboard - ${id}`;
 
       const newJourney = await insert({
         table: schema.journey,

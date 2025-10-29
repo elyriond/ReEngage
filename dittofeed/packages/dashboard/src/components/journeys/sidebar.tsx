@@ -107,7 +107,7 @@ function Sidebar() {
             variant="h5"
             sx={{ fontSize: theme.typography.h6.fontSize, userSelect: "none" }}
           >
-            Journey Node Palette
+            Whiteboard Node Palette
           </Typography>
           {nodeTypesEls}
         </Stack>
@@ -119,7 +119,7 @@ function Sidebar() {
             p: 1,
           }}
         >
-          There is an issue with is the journey. Please fix it before
+          There is an issue with the whiteboard. Please fix it before
           proceeding.
           <br />
           {globalErrors.map((e) => (

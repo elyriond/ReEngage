@@ -233,7 +233,7 @@ export default function MessagesPage() {
   return (
     <AnalysisLayout tab="messages">
       <Typography sx={{ padding: 1 }} variant="h5">
-        Journey Messages
+        Whiteboard Messages
       </Typography>
       <DataGrid
         rows={rows}
@@ -246,8 +246,8 @@ export default function MessagesPage() {
             field: "journeyName",
             flex: 1,
             renderHeader: () => (
-              <Tooltip title="Journey">
-                <Typography variant="subtitle2">Journey / Broadcast</Typography>
+              <Tooltip title="Whiteboard">
+                <Typography variant="subtitle2">Whiteboard / Broadcast</Typography>
               </Tooltip>
             ),
             renderCell: (params) => {

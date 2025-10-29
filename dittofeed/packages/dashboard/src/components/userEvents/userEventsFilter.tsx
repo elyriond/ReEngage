@@ -121,7 +121,7 @@ type FilterKey =
 const keyCommandLabels: Record<FilterKey, string> = {
   event: "Event Name",
   broadcastId: "Broadcast",
-  journeyId: "Journey",
+  journeyId: "Whiteboard",
   eventType: "Event Type",
   messageId: "Message ID",
   userId: "User ID",

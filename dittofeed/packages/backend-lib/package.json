@@ -10,7 +10,9 @@
     "config-env-prod": "node scripts/configEnv.js"
   },
   "exports": {
-    "./*": "./dist/*.js"
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*.js",
+    "./src/*": "./src/*.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.600.0",

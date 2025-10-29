@@ -193,7 +193,7 @@ function NameCell({ row, getValue }: CellContext<Row, unknown>) {
           {name}
         </Typography>
       </Tooltip>
-      <Tooltip title="Edit Journey">
+      <Tooltip title="Edit Whiteboard">
         <IconButton size="small" component={Link} href={href}>
           <OpenInNewIcon fontSize="small" />
         </IconButton>
@@ -292,7 +292,7 @@ export default function JourneysTable() {
 
   useEffect(() => {
     if (query.isError) {
-      setSnackbarMessage("Failed to load journeys.");
+      setSnackbarMessage("Failed to load whiteboards.");
       setSnackbarOpen(true);
     }
   }, [query.isError]);
@@ -353,14 +353,14 @@ export default function JourneysTable() {
         { name: journeyName.trim(), draft },
         {
           onSuccess: (data) => {
-            setSnackbarMessage("Journey created successfully!");
+            setSnackbarMessage("Whiteboard created successfully!");
             setSnackbarOpen(true);
             setDialogOpen(false);
             setJourneyName("");
             router.push(`/journeys/v2`, { id: data.id });
           },
           onError: () => {
-            setSnackbarMessage("Failed to create journey.");
+            setSnackbarMessage("Failed to create whiteboard.");
             setSnackbarOpen(true);
           },
         },
@@ -381,14 +381,14 @@ export default function JourneysTable() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography variant="h4">Journeys</Typography>
+          <Typography variant="h4">Whiteboards</Typography>
           <Button
             variant="contained"
             sx={greyButtonStyle}
             onClick={() => setDialogOpen(true)}
             startIcon={<AddIcon />}
           >
-            New Journey
+            New Whiteboard
           </Button>
         </Stack>
         <TableContainer component={Paper}>
@@ -466,7 +466,7 @@ export default function JourneysTable() {
                 journeysData.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={columns.length} align="center">
-                      No journeys found.
+                      No whiteboards found.
                     </TableCell>
                   </TableRow>
                 )}
@@ -551,12 +551,12 @@ export default function JourneysTable() {
         fullWidth
         TransitionProps={{ onEntered: () => nameInputRef.current?.focus() }}
       >
-        <DialogTitle>Create New Journey</DialogTitle>
+        <DialogTitle>Create New Whiteboard</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
             id="name"
-            label="Journey Name"
+            label="Whiteboard Name"
             type="text"
             fullWidth
             variant="standard"

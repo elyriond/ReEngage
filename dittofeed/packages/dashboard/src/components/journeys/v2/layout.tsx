@@ -88,25 +88,26 @@ const statusValues: Record<"NotStarted" | "Running" | "Paused", StatusCopy> = {
     nextStatus: "Running",
     nextStatusLabel: "Start",
     currentDescription:
-      "The journey has not been started. Users have not been exposed to the journey.",
-    nextDescription: "Start the journey to expose users to it.",
+      "The whiteboard has not been started. Users have not been exposed to the whiteboard.",
+    nextDescription: "Start the whiteboard to expose users to it.",
   },
   Running: {
     label: "Running",
     nextStatus: "Paused",
     nextStatusLabel: "Pause",
     currentDescription:
-      "The journey is running. Users are being exposed to it.",
+      "The whiteboard is running. Users are being exposed to it.",
     nextDescription:
-      "Pause the journey to prevent users from entering it. Users already on the journey will exit if the journey is not restarted before they enter a message node.",
+      "Pause the whiteboard to prevent users from entering it. Users already on the whiteboard will exit if the whiteboard is not restarted before they enter a message node.",
   },
   Paused: {
     label: "Paused",
     nextStatus: "Running",
     nextStatusLabel: "Restart",
     currentDescription:
-      "The journey is running. Users are not currently being exposed to the journey, but were prior to it being paused. Users already on the journey will exit if the journey is not restarted before they enter a message node.",
-    nextDescription: "Restart the journey to start exposing users to it again.",
+      "The whiteboard is running. Users are not currently being exposed to the whiteboard, but were prior to it being paused. Users already on the whiteboard will exit if the whiteboard is not restarted before they enter a message node.",
+    nextDescription:
+      "Restart the whiteboard to start exposing users to it again.",
   },
 };
 
@@ -215,7 +216,7 @@ function JourneyStatusControl() {
       return {
         label: "Loading...",
         disabled: true,
-        currentDescription: "Loading journey status...",
+        currentDescription: "Loading whiteboard status...",
         nextStatusLabel: "Loading",
         nextDescription: "Please wait...",
       };
@@ -226,13 +227,13 @@ function JourneyStatusControl() {
         label: "Unfinished",
         disabled: true,
         currentDescription:
-          "This journey has not been finished and can't be started.",
+          "This whiteboard has not been finished and can't be started.",
         nextStatusLabel: "Disabled",
-        nextDescription: "Finish configuring this journey to progress",
+        nextDescription: "Finish configuring this whiteboard to progress",
       };
     }
     if (journey.status === "Broadcast") {
-      throw new Error("Broadcast journeys cannot be configured.");
+      throw new Error("Broadcast whiteboards cannot be configured.");
     }
     return statusValues[journey.status];
   }, [journey, definitionFromState]);
@@ -500,7 +501,7 @@ export default function JourneyV2Layout({
   const settingsCommands: SettingsCommand[] = useMemo(() => {
     return [
       {
-        label: "Copy journey definition as JSON",
+        label: "Copy whiteboard definition as JSON",
         icon: <ContentCopyOutlined />,
         disabled: !journey?.definition,
         action: () => {
@@ -509,13 +510,13 @@ export default function JourneyV2Layout({
           }
           copyToClipboard({
             value: JSON.stringify(journey.definition),
-            successNotice: "Journey definition copied to clipboard as JSON.",
-            failureNotice: "Failed to copy journey definition.",
+            successNotice: "Whiteboard definition copied to clipboard as JSON.",
+            failureNotice: "Failed to copy whiteboard definition.",
           });
         },
       },
       {
-        label: "Copy journey definition as CURL",
+        label: "Copy whiteboard definition as CURL",
         icon: <ContentCopyTwoTone />,
         disabled: !journey?.definition,
         action: () => {
@@ -525,8 +526,8 @@ export default function JourneyV2Layout({
           const curl = formatJourneyCurl(journey as SavedJourneyResource);
           copyToClipboard({
             value: curl,
-            successNotice: "Journey definition copied to clipboard as CURL.",
-            failureNotice: "Failed to copy journey CURL.",
+            successNotice: "Whiteboard definition copied to clipboard as CURL.",
+            failureNotice: "Failed to copy whiteboard CURL.",
           });
         },
       },
@@ -661,7 +662,7 @@ export default function JourneyV2Layout({
             alignItems: "center",
           }}
         >
-          Journey Options
+          Whiteboard Options
           <IconButton
             onClick={handleOptionsDialogClose}
             size="small"
@@ -682,7 +683,7 @@ export default function JourneyV2Layout({
                   disabled={isJourneyMutationPending}
                 />
               }
-              label="Allow journey to run multiple times per user"
+              label="Allow whiteboard to run multiple times per user"
             />
           </Stack>
         </DialogContent>

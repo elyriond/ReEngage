@@ -32,7 +32,7 @@ interface GroupByCommand {
 
 const groupByCommands: GroupByCommand[] = [
   { label: "None", value: null },
-  { label: "Journey", value: "journey" },
+  { label: "Whiteboard", value: "journey" },
   { label: "Broadcast", value: "broadcast" },
   { label: "Message Template", value: "messageTemplate" },
   { label: "Channel", value: "channel" },

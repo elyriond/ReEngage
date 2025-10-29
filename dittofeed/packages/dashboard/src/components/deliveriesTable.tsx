@@ -633,7 +633,7 @@ export function DeliveriesTable({
             {
               field: "originId",
               flex: 1,
-              headerName: "Journey / Broadcast",
+              headerName: "Whiteboard / Broadcast",
               renderCell: ({ row }: GridRenderCellParams<TableItem>) => {
                 if (disableJourneyLinks) {
                   return <span>{row.originName}</span>;

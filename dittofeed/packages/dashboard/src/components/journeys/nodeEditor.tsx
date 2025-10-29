@@ -287,7 +287,7 @@ function EntryNodeFields({
             )}
           />
           <Stack direction="row" spacing={1}>
-            <InfoTooltip title="If checked, the user will be re-entered into the journey after exiting it. This is useful for creating loops." />
+            <InfoTooltip title="If checked, the user will be re-entered into the whiteboard after exiting it. This is useful for creating loops." />
             <FormControlLabel
               control={
                 <Checkbox
@@ -307,7 +307,7 @@ function EntryNodeFields({
                   color="primary"
                 />
               }
-              label="Re-enter Journey on Exit"
+              label="Re-enter Whiteboard on Exit"
               disabled={disabled}
             />
           </Stack>
@@ -793,7 +793,7 @@ function MessageNodeFields({
       {providerOverrideEl}
       {providerOverrideConfigEl}
       <Stack direction="row" spacing={1}>
-        <InfoTooltip title="When enabled, message failures won't cause the journey to exit. The user will continue to the next step even if the message fails to send." />
+        <InfoTooltip title="When enabled, message failures won't cause the whiteboard to exit. The user will continue to the next step even if the message fails to send." />
         <FormControlLabel
           control={
             <Checkbox
@@ -1250,7 +1250,7 @@ function NodeLayout({
             startIcon={<Delete />}
             onClick={handleDelete}
           >
-            Delete Journey Node
+            Delete Whiteboard Node
           </Button>
         ) : null}
       </Stack>

@@ -8,7 +8,7 @@ export default function JourneyStepper({ journeyId }: { journeyId: string }) {
   const path = useRouter();
   const steps: { label: string; path: string }[] = [
     {
-      label: "Journey Builder",
+      label: "Whiteboard Builder",
       path: `/journeys/${journeyId}`,
     },
     { label: "Configure", path: `/journeys/configure/${journeyId}` },
