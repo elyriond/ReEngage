@@ -18,12 +18,14 @@ import {
   IconButton,
   Slide,
   Stack,
-  styled,
   SxProps,
+  Tab,
+  Tabs,
   TextField,
   Theme,
   Tooltip,
   Typography,
+  styled,
   useTheme,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
@@ -65,7 +67,7 @@ import {
 import { LoremIpsum } from "lorem-ipsum";
 import { useRouter } from "next/router";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useImmer } from "use-immer";
 
@@ -75,6 +77,10 @@ import {
   noticeAnchorOrigin as anchorOrigin,
   noticeAnchorOrigin,
 } from "../lib/notices";
+import {
+  DraftUpdateFn,
+  useTemplateDraftController,
+} from "../lib/useTemplateDraftController";
 import { useMessageTemplateQuery } from "../lib/useMessageTemplateQuery";
 import {
   UpsertMessageTemplateParams,
@@ -92,6 +98,7 @@ import ErrorBoundary from "./errorBoundary";
 import { SubtleHeader } from "./headers";
 import InfoTooltip from "./infoTooltip";
 import LoadingModal from "./loadingModal";
+import TemplateChatPanel from "./templateChatPanel";
 import {
   Publisher,
   PublisherDraftToggle,
@@ -241,9 +248,7 @@ export type RenderPreviewSection = (
   args: RenderPreviewParams,
 ) => React.ReactNode;
 
-export type SetDraft = (
-  setter: (draft: MessageTemplateResourceDraft) => MessageTemplateResourceDraft,
-) => void;
+export type SetDraft = DraftUpdateFn;
 
 export const ModeEnum = {
   Full: "Full",
@@ -344,6 +349,7 @@ export interface TemplateEditorProps {
   mode?: TemplateEditorMode;
   defaultIsUserPropertiesMinimised?: boolean;
   messageTemplateConfiguration?: Omit<MessageTemplateConfiguration, "type">;
+  enableChatMode?: boolean;
 }
 
 export default function TemplateEditor({
@@ -365,6 +371,7 @@ export default function TemplateEditor({
   hideUserPropertiesPanel = false,
   hideEditor = false,
   messageTemplateConfiguration,
+  enableChatMode = false,
 }: TemplateEditorProps) {
   const theme = useTheme();
   const router = useRouter();
@@ -458,6 +465,14 @@ export default function TemplateEditor({
     userPropertiesJSON,
     isUserPropertiesMinimised,
   } = state;
+  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<
+    "preview" | "mjml"
+  >("preview");
+  useEffect(() => {
+    if (hideEditor && activeWorkspaceTab === "mjml") {
+      setActiveWorkspaceTab("preview");
+    }
+  }, [activeWorkspaceTab, hideEditor]);
 
   // Set server state post page transition for CSR
   useEffect(() => {
@@ -840,6 +855,43 @@ export default function TemplateEditor({
     template?.definition,
     viewDraft,
   ]);
+  const draftController = useTemplateDraftController({
+    draft: renderEditorParams?.draft ?? null,
+    setDraft: renderEditorParams?.setDraft ?? null,
+    enabled: renderEditorParams?.inDraftView ?? false,
+  });
+
+  // Wrap setDraft to route through draft controller for history tracking
+  const renderEditorParamsWithHistory: RenderEditorParams | null = useMemo(() => {
+    if (!renderEditorParams || !draftController) {
+      return renderEditorParams;
+    }
+
+    return {
+      ...renderEditorParams,
+      setDraft: (setter) => {
+        if (!renderEditorParams.draft || !renderEditorParams.inDraftView) {
+          return;
+        }
+
+        // Clone current draft to capture "before" state
+        const beforeDraft = renderEditorParams.draft;
+        const beforeSnapshot = JSON.parse(
+          JSON.stringify(beforeDraft),
+        ) as MessageTemplateResourceDraft;
+
+        // Apply the updater to get new state
+        const afterDraft = setter(beforeSnapshot);
+
+        // Route through controller for history tracking
+        draftController.dispatchDraftPatch({
+          changes: afterDraft,
+          source: "manual",
+          description: "Manual edit",
+        });
+      },
+    };
+  }, [renderEditorParams, draftController]);
 
   const commands: SettingsCommand[] = useMemo(() => {
     return [
@@ -858,7 +910,7 @@ export default function TemplateEditor({
     ];
   }, [template?.definition]);
 
-  if (!workspace || !template || !renderEditorParams) {
+  if (!workspace || !template || !renderEditorParamsWithHistory) {
     return null;
   }
 
@@ -1099,6 +1151,14 @@ export default function TemplateEditor({
       draft.isUserPropertiesMinimised = !draft.isUserPropertiesMinimised;
     });
   };
+  const handleWorkspaceTabChange = useCallback(
+    (_event: React.SyntheticEvent, newValue: string) => {
+      setActiveWorkspaceTab(
+        newValue === "mjml" ? "mjml" : "preview",
+      );
+    },
+    [],
+  );
 
   if (!template.definition) {
     return null;
@@ -1112,7 +1172,7 @@ export default function TemplateEditor({
       }}
       spacing={1}
     >
-      <Stack>{renderEditorHeader(renderEditorParams)}</Stack>
+      <Stack>{renderEditorHeader(renderEditorParamsWithHistory)}</Stack>
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -1141,7 +1201,7 @@ export default function TemplateEditor({
           )
         )}
         <Stack direction="row" spacing={1}>
-          {renderEditorOptions && renderEditorOptions(renderEditorParams)}
+          {renderEditorOptions && renderEditorOptions(renderEditorParamsWithHistory)}
           <SettingsMenu commands={commands} />
           {fullscreen === null ? (
             <Stack direction="row" alignItems="center" spacing={2}>
@@ -1168,7 +1228,7 @@ export default function TemplateEditor({
         className="editor-body"
         sx={{ backgroundColor: "white" }}
       >
-        <ErrorBoundary>{renderEditorBody(renderEditorParams)}</ErrorBoundary>
+        <ErrorBoundary>{renderEditorBody(renderEditorParamsWithHistory)}</ErrorBoundary>
       </BodyBox>
     </Stack>
   );
@@ -1392,6 +1452,91 @@ export default function TemplateEditor({
     </Stack>
   );
 
+  const mainWorkspace = enableChatMode ? (
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{ flex: 1, minHeight: 0 }}
+    >
+      <Box
+        sx={{
+          width: 360,
+          minWidth: 280,
+          maxWidth: 420,
+          display: { xs: "none", md: "block" },
+          height: "100%",
+        }}
+      >
+        <TemplateChatPanel
+          canUndo={draftController.canUndo}
+          canRedo={draftController.canRedo}
+          onUndo={draftController.undo}
+          onRedo={draftController.redo}
+          history={draftController.history}
+        />
+      </Box>
+      <Stack sx={{ flex: 1, minHeight: 0 }} spacing={1}>
+        <Tabs
+          value={activeWorkspaceTab}
+          onChange={handleWorkspaceTabChange}
+          textColor="primary"
+          indicatorColor="primary"
+        >
+          <Tab label="Preview" value="preview" />
+          {!hideEditor && <Tab label="MJML" value="mjml" />}
+        </Tabs>
+        <Box
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            overflow: "hidden",
+          }}
+        >
+          {activeWorkspaceTab === "preview" && (
+            <Box
+              sx={{
+                height: "100%",
+                minHeight: 0,
+              }}
+            >
+              {preview}
+            </Box>
+          )}
+          {activeWorkspaceTab === "mjml" && !hideEditor && (
+            <Box
+              sx={{
+                height: "100%",
+                minHeight: 0,
+              }}
+            >
+              {editor}
+            </Box>
+          )}
+        </Box>
+      </Stack>
+    </Stack>
+  ) : (
+    <Stack direction="row" sx={{ flex: 1 }}>
+      {!hideEditor && (
+        <Box
+          sx={{
+            width: "50%",
+          }}
+        >
+          {editor}
+        </Box>
+      )}
+      <Divider orientation="vertical" />
+      <Box
+        sx={{
+          width: hideEditor ? "100%" : "50%",
+        }}
+      >
+        {preview}
+      </Box>
+    </Stack>
+  );
+
   return (
     <>
       <Stack
@@ -1405,25 +1550,7 @@ export default function TemplateEditor({
         spacing={1}
       >
         {!hideUserPropertiesPanel && userPropertiesPanel}
-        <Stack direction="row" sx={{ flex: 1 }}>
-          {!hideEditor && (
-            <Box
-              sx={{
-                width: "50%",
-              }}
-            >
-              {editor}
-            </Box>
-          )}
-          <Divider orientation="vertical" />
-          <Box
-            sx={{
-              width: hideEditor ? "100%" : "50%",
-            }}
-          >
-            {preview}
-          </Box>
-        </Stack>
+        {mainWorkspace}
       </Stack>
       <Dialog
         fullScreen

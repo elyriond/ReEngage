@@ -534,6 +534,7 @@ export default function EmailEditor({
       hideUserPropertiesPanel={hideUserPropertiesPanel}
       hideEditor={hideEditor}
       messageTemplateConfiguration={messageTemplateConfiguration}
+      enableChatMode
     />
   );
 }

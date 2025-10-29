@@ -87,6 +87,14 @@
 7. **Demo Polishing**
    - Seed initial conversation and template state, ensure undo/redo works, and document walkthrough steps.
 
+## Current Progress
+- Converted `TemplateEditor` to the new chat-aware shell: chat column + Preview/MJML tabs gated by `enableChatMode`, while keeping fullscreen/dialog behaviour intact.
+- Added `useTemplateDraftController` hook with undo/redo history so future chat, quick tweaks, and manual MJML edits share a single patch pipeline.
+- Dropped in a placeholder `TemplateChatPanel` surfacing undo/redo controls and recent change history; ready to swap for the live LLM chat UI.
+- Enabled the new layout for email templates via `enableChatMode` in `emailEditor.tsx`; other channels remain on the legacy split view.
+- Updated the working dev setup guidance (switch Yarn to `node-modules`, handle Corepack permissions) to unblock local testing on port 3001.
+- Next up: wire the OpenAI-backed `/template-chat` endpoint, stream responses into the panel, and introduce quick-tweak controls inside the Preview tab.
+
 ## Demo Preparation
 - Seed an example conversation that walks through generating and refining the basket reminder email.
 - Preload recommender mock data and confirm preview renders cleanly.
