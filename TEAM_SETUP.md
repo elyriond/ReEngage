@@ -15,9 +15,8 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd mapp-fashion
-git submodule update --init --recursive
+git clone https://github.com/elyriond/ReEngage.git
+cd ReEngage
 ```
 
 ### 2. Start Dittofeed Locally
